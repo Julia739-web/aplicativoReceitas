@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {SafeAreaView, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView} from 'react-native'
+import {SafeAreaView, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView} from 'react-native';
+import {Alert} from 'react-native';
 import { endAsyncEvent } from 'react-native/Libraries/Performance/Systrace';
 
 export default function App() {
@@ -8,6 +9,7 @@ export default function App() {
   const [title, setTitle] = useState('');
   const [ingredients, setIngredients] = useState('');
   const [preparo, setPreparo] = useState('');
+  const [edit, setEdit] = useState(null);
 
   useEffect(() => {
     const loadRecipes = async () => {
@@ -46,6 +48,18 @@ export default function App() {
       // Filtra a lista, mantendo apenas as receitas com ID diferente do que foi passado
       setRecipes(currentRecipes => currentRecipes.filter(recipe => recipe.id !== id));
     };
+    const handleEditRecipe = (id) => {
+      const recipeToEdit = recipes.find(recipe => recipe.id === id);
+  if (!recipeToEdit) return;
+
+  setTitle(recipeToEdit.title);
+  setIngredients(recipeToEdit.ingredients);
+  setPreparo(recipeToEdit.preparo);
+
+  setView('formulario');
+
+  setEditingId(id);
+    };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,8 +86,14 @@ export default function App() {
                 {/* DELETAR */}
                   <TouchableOpacity
                     style={styles.deleteButton}
-                    onPress={() => handleDeleteRecipe(item.id)}>
+                    onPress={() => handleDeletetRecipe(item.id)}>
                     <Text style={styles.buttonText}>Excluir</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                   style={styles.EditButton}
+                    onPress={() => handleEditRecipe(item.id)}>
+                    <Text style={styles.buttonText}>Editar</Text>
                   </TouchableOpacity>
 
                 </View>
@@ -108,17 +128,18 @@ export default function App() {
              <TouchableOpacity style={[styles.formButton, styles.cancelButton]} onPress={() => setView('lista')}>
                 <Text style={styles.buttonText}>Cancelar</Text>
               </TouchableOpacity>
+
               <TouchableOpacity style={[styles.formButton, styles.saveButton]} onPress={handleAddRecipe}>
                 <Text style={styles.buttonText}>Salvar</Text>
               </TouchableOpacity>
             </View>
           </View>
-        )}
+        )};
       </ScrollView>
     </SafeAreaView>
   );
 
-}
+  }
 
 const styles = StyleSheet.create({
   container: {
@@ -160,20 +181,32 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   formActions: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-around',
+    gap: 10,
   },
   formButton: {
     flex: 1,
     padding: 12,
     borderRadius: 5,
     marginHorizontal: 5,
+
   },
   cancelButton: {
     backgroundColor: '#95a5a6',
+    flex: 1,
+    marginRight: 5,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
   },
   saveButton: {
+    flex: 1,
+    marginLeft: 5,
     backgroundColor: '#27ae60',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center'
   },
   // Lista
   addButton: {
@@ -212,6 +245,12 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: '#e74c3c',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  EditButton: {
+    backgroundColor: '#ffa033ff',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
