@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {SafeAreaView, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView} from 'react-native';
-import {Alert} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Alert} from 'react-native';
 import { endAsyncEvent } from 'react-native/Libraries/Performance/Systrace';
 
 export default function App() {
@@ -45,9 +44,10 @@ export default function App() {
       setView('lista');
     };
     const handleDeleteRecipe = (id) => {
-      // Filtra a lista, mantendo apenas as receitas com ID diferente do que foi passado
-      setRecipes(currentRecipes => currentRecipes.filter(recipe => recipe.id !== id));
+    setRecipes(currentRecipes => currentRecipes.filter(recipe => recipe.id !== id));
+    alert("Deseja deletar essa receita?")
     };
+
     const handleEditRecipe = (id) => {
       const recipeToEdit = recipes.find(recipe => recipe.id === id);
   if (!recipeToEdit) return;
@@ -86,7 +86,7 @@ export default function App() {
                 {/* DELETAR */}
                   <TouchableOpacity
                     style={styles.deleteButton}
-                    onPress={() => handleDeletetRecipe(item.id)}>
+                    onPress={() => handleDeleteRecipe(item.id)}>
                     <Text style={styles.buttonText}>Excluir</Text>
                   </TouchableOpacity>
 
